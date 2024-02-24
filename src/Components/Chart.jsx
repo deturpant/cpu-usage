@@ -7,47 +7,30 @@ const Chart = ({ data, shutdowns }) => {
   const addShutdownPoints = () => {
     const newData = [];
     let dataIndex = 0;
-    
-    const uniqueTimes = new Set();
-    
-    shutdowns.forEach(({ start, end }) => {
-      while (dataIndex < data.length && data[dataIndex].time < start) {
-        const { time, cpuLoad } = data[dataIndex];
-        if (!uniqueTimes.has(time)) {
-          newData.push({ time, cpuLoad });
-          uniqueTimes.add(time);
-        }
+    let shutdownIndex = 0;
+  
+    while (dataIndex < data.length || shutdownIndex < shutdowns.length) {
+      const dataTime = dataIndex < data.length ? data[dataIndex].time : null;
+      const shutdownStart = shutdownIndex < shutdowns.length ? shutdowns[shutdownIndex].start : null;
+      const shutdownEnd = shutdownIndex < shutdowns.length ? shutdowns[shutdownIndex].end : null;
+  
+      if (dataTime === null) {
+        newData.push({ time: shutdownStart, cpuLoad: null });
+        newData.push({ time: shutdownEnd, cpuLoad: null });
+        shutdownIndex++;
+      } else if (shutdownStart === null || dataTime < shutdownStart) {
+        newData.push({ time: dataTime, cpuLoad: data[dataIndex].cpuLoad });
         dataIndex++;
+      } else {
+        newData.push({ time: shutdownStart, cpuLoad: null });
+        newData.push({ time: shutdownEnd, cpuLoad: null });
+        shutdownIndex++;
       }
-      
-      newData.push({ time: start, cpuLoad: null });
-      newData.push({ time: end, cpuLoad: null });
-  
-      if (!uniqueTimes.has(start)) {
-        newData.push({ time: start, cpuLoad: null });
-        uniqueTimes.add(start);
-      }
-      if (!uniqueTimes.has(end)) {
-        newData.push({ time: end, cpuLoad: null });
-        uniqueTimes.add(end);
-      }
-  
-      while (dataIndex < data.length && data[dataIndex].time <= end) {
-        dataIndex++;
-      }
-    });
-  
-    while (dataIndex < data.length) {
-      const { time, cpuLoad } = data[dataIndex];
-      if (!uniqueTimes.has(time)) {
-        newData.push({ time, cpuLoad });
-        uniqueTimes.add(time);
-      }
-      dataIndex++;
     }
   
     return newData;
   };
+  
   
 
   const newData = addShutdownPoints();
