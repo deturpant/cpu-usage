@@ -1,0 +1,34 @@
+.main-container {
+    margin: 20px;
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-start;
+  }
+  
+  .chart-container {
+    width: 80%; /* Ширина контейнера графика */
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .chart-container h2 {
+    margin-bottom: 10px;
+    font-size: 18px;
+  }
+  
+  .refresh-interval {
+    margin-left: 200px;
+    margin-top: 20px;
+  }
+  
+  .refresh-interval h3 {
+    margin-bottom: 10px;
+  }
+  
+  .refresh-interval select {
+    padding: 5px;
+    font-size: 16px;
+  }
+  
