@@ -4,43 +4,20 @@ import { Line } from "react-chartjs-2";
 
 
 const Chart = ({ data, shutdowns }) => {
-  const addShutdownPoints = () => {
-    const newData = [];
-    let dataIndex = 0;
-    let shutdownIndex = 0;
-  
-    while (dataIndex < data.length || shutdownIndex < shutdowns.length) {
-      const dataTime = dataIndex < data.length ? data[dataIndex].time : null;
-      const shutdownStart = shutdownIndex < shutdowns.length ? shutdowns[shutdownIndex].start : null;
-      const shutdownEnd = shutdownIndex < shutdowns.length ? shutdowns[shutdownIndex].end : null;
-  
-      if (dataTime === null) {
-        newData.push({ time: shutdownStart, cpuLoad: null });
-        newData.push({ time: shutdownEnd, cpuLoad: null });
-        shutdownIndex++;
-      } else if (shutdownStart === null || dataTime < shutdownStart) {
-        newData.push({ time: dataTime, cpuLoad: data[dataIndex].cpuLoad });
-        dataIndex++;
-      } else {
-        newData.push({ time: shutdownStart, cpuLoad: null });
-        newData.push({ time: shutdownEnd, cpuLoad: null });
-        shutdownIndex++;
-      }
-    }
-  
-    return newData;
-  };
-  
-  
-
-  const newData = addShutdownPoints();
+  const newData = data.map(entry => {
+    const isShutdown = shutdowns.some(interval => entry.time >= interval.start && entry.time <= interval.end);
+    return {
+      time: entry.time,
+      cpuLoad: isShutdown ? null : entry.cpuLoad
+    };
+  });
 
   const chartData = {
-    labels: newData.map((entry) => entry.time), // Время
+    labels: newData.map(entry => entry.time),
     datasets: [
       {
         label: "CPU usage",
-        data: newData.map((entry) => entry.cpuLoad), // Загрузка процессора
+        data: newData.map(entry => entry.cpuLoad),
         borderColor: "#3333ff",
         fill: false
       }
