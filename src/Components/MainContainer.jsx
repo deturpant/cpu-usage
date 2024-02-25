@@ -13,7 +13,7 @@ const MainContainer = () => {
     const fetchData = async () => {
       try {
         const response1 = await axios.get(
-          "http://192.168.3.62:8081/last_hours_loads"
+          "https://api.cpu-load.deturpant.ru/last_hours_loads"
         );
         const formattedData1 = response1.data.cpu_loads.map(entry => ({
           time: entry.timestamp.slice(11, 19),
@@ -22,7 +22,7 @@ const MainContainer = () => {
         setData1(formattedData1);
 
         const response2 = await axios.get(
-          "http://192.168.3.62:8081/avg_loads"
+          "https://api.cpu-load.deturpant.ru/avg_loads"
         );
         const formattedData2 = Object.entries(response2.data.cpu_loads).map(
           ([time, cpuLoad]) => ({
@@ -33,7 +33,7 @@ const MainContainer = () => {
         setData2(formattedData2);
 
         const responseShutdowns = await axios.get(
-          "http://192.168.3.62:8081/shutdowns"
+          "https://api.cpu-load.deturpant.ru/shutdowns"
         );
         const shutdownIntervals = responseShutdowns.data.shutdowns.map(interval => ({
           start: interval[0].slice(11, 19),
